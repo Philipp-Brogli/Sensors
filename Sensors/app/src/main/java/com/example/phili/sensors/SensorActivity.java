@@ -21,8 +21,8 @@ public class SensorActivity extends Activity implements SensorEventListener {
 
     @Override
     public final void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.listener_fragment);
+       super.onCreate(savedInstanceState);
+       setContentView(R.layout.listener_fragment);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mProxy = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
