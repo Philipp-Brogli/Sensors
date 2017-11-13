@@ -1,5 +1,7 @@
 package com.example.phili.sensors;
 
+import android.content.Intent;
+import android.hardware.SensorManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -159,4 +166,52 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+
+//==================================================================================================
+//==================================================================================================
+//==================================================================================================
+
+
+    public void onRadioButtonClicked(View view) {
+
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radioButton_all_available:
+                if (checked)
+                    Toast.makeText(getApplicationContext(), "all", Toast.LENGTH_SHORT).show();
+                    AvailabilityText("all");
+                break;
+            case R.id.radioButton_proxy_available:
+                if (checked)
+                    Toast.makeText(getApplicationContext(), "proxy", Toast.LENGTH_SHORT).show();
+                    AvailabilityText("proxy");
+                break;
+            case R.id.radioButton_listener_value:
+                if (checked)
+                    //ListenerText("value");
+                break;
+            case R.id.radioButton_listener_accuracy:
+                if (checked)
+                    Sensor();
+                    //ListenerText("Accuracy");
+
+                break;
+        }
+    }
+    public void AvailabilityText(String text){
+        TextView tv = (TextView) findViewById(R.id.textView_available_output);
+        tv.setText(text);
+    }
+    public void ListenerText(String text){
+        TextView tv = (TextView) findViewById(R.id.textView_listener_output);
+        tv.setText(text);
+    }
+    public void Sensor(){
+        Intent intent = new Intent(this,SensorActivity.class);
+        startActivity(intent);
+    }
+
 }

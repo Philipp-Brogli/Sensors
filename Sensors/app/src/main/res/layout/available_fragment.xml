@@ -25,13 +25,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/available_all"
+            android:onClick="onRadioButtonClicked"
             />
 
         <RadioButton
             android:id="@+id/radioButton_proxy_available"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/available_proxy"/>
+            android:text="@string/available_proxy"
+            android:onClick="onRadioButtonClicked"
+            />
     </RadioGroup>
 
     <TextView
