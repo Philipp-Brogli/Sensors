@@ -46,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        // Whenever the following Intent get's created the software crashes.
+        Intent intent = new Intent(this,SensorActivity.class);
+        startActivity(intent);
+        // ================================================================
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -195,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.radioButton_listener_accuracy:
                 if (checked)
-                    Sensor();
+
                     //ListenerText("Accuracy");
 
                 break;
@@ -209,9 +214,6 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = (TextView) findViewById(R.id.textView_listener_output);
         tv.setText(text);
     }
-    public void Sensor(){
-        Intent intent = new Intent(this,SensorActivity.class);
-        startActivity(intent);
-    }
+
 
 }
