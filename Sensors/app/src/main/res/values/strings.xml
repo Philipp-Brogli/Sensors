@@ -9,4 +9,5 @@
     <string name="available_proxy">Only Proximity Sensor</string>
     <string name="listener_value">Value change listener</string>
     <string name="listener_accuracy">Accuracy change listener</string>
+    <string name="button_capability">Shuffle through some Properties</string>
 </resources>

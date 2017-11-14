@@ -1,6 +1,8 @@
 package com.example.phili.sensors;
 
-import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,11 +21,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -39,6 +42,15 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private SensorManager mSensorManager;
+    private Sensor mProximity;
+    private List<Sensor> listSensors;
+    private boolean all = false;
+    private boolean proxy = false;
+    private boolean accuracyB = false;
+    private boolean value = false;
+    private int choise = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        // Whenever the following Intent get's created the software crashes.
-        Intent intent = new Intent(this,SensorActivity.class);
-        startActivity(intent);
-        // ================================================================
+
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -71,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
     }
 
@@ -185,35 +197,132 @@ public class MainActivity extends AppCompatActivity {
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.radioButton_all_available:
-                if (checked)
-                    Toast.makeText(getApplicationContext(), "all", Toast.LENGTH_SHORT).show();
-                    AvailabilityText("all");
+                if (checked){
+                    all=true;
+                    proxy =false;
+                    AvailabilityText();
+                }
                 break;
             case R.id.radioButton_proxy_available:
-                if (checked)
-                    Toast.makeText(getApplicationContext(), "proxy", Toast.LENGTH_SHORT).show();
-                    AvailabilityText("proxy");
+                if (checked) {
+                    all = false;
+                    proxy = true;
+                    AvailabilityText();
+
+                }
+
                 break;
             case R.id.radioButton_listener_value:
-                if (checked)
-                    //ListenerText("value");
-                break;
+                if (checked){
+                    accuracyB=false;
+                    value=true;
+                }
+                 break;
             case R.id.radioButton_listener_accuracy:
-                if (checked)
-
-                    //ListenerText("Accuracy");
-
+                if (checked){
+                    accuracyB=true;
+                    value=false;
+                    Toast.makeText(getApplicationContext(), "Test",
+                            Toast.LENGTH_SHORT).show();}
                 break;
         }
+
     }
-    public void AvailabilityText(String text){
+
+    public void selectButtonClicked(View view){
+            Toast.makeText(getApplicationContext(), "button",
+                    Toast.LENGTH_SHORT).show();
+
+        if (choise==4){
+            choise=1;
+        }else{
+            choise+=1;
+        }
+        CapabiolityText(choise);
+     }
+
+    public void AvailabilityText(){
+
+        if(all){
+            listSensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
+        }else{
+            listSensors = mSensorManager.getSensorList(Sensor.TYPE_PROXIMITY);
+        }
+
+        int text = listSensors.size();
+        String strText = Integer.toString(text);
         TextView tv = (TextView) findViewById(R.id.textView_available_output);
-        tv.setText(text);
+        tv.setText(strText);
+    }
+    public void CapabiolityText(int choise){
+        String Description="";
+        String Value="";
+        float text;
+        switch(choise) {
+            case 1:
+                Description = "Power: ";
+                text = mProximity.getPower();
+                Value = Float.toString(text);
+
+                break;
+            case 2:
+                Description = "Resolution: ";
+                text = mProximity.getResolution();
+                Value = Float.toString(text);
+                break;
+            case 3:
+                Description = "Maximum Range: ";
+                text = mProximity.getMaximumRange();
+                Value = Float.toString(text);
+                break;
+            case 4:
+                Description = "Minimal Delay: ";
+                text = mProximity.getMinDelay();
+                Value = Float.toString(text);
+                break;
+        }
+
+
+
+
+
+
+
+        TextView tv = (TextView) findViewById(R.id.textView4);
+        tv.setText(Description);
+        TextView tv2 = (TextView) findViewById(R.id.textView);
+        tv2.setText(Value);
     }
     public void ListenerText(String text){
+
         TextView tv = (TextView) findViewById(R.id.textView_listener_output);
         tv.setText(text);
     }
 
 
+
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+    }
+
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        if(accuracyB){
+            String strText = Integer.toString(accuracy);
+            ListenerText(strText);
+        }
+    }
+
+    public void onSensorChanged(SensorEvent event) {
+        if(value) {
+            float text = event.values[0];
+            String strText = Float.toString(text);
+            ListenerText(strText);
+        }
+    }
 }
